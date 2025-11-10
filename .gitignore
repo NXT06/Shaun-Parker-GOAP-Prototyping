@@ -97,3 +97,9 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+/GOAP-AI/Library
+/GOAP-AI/obj/Debug
+/GOAP-AI/Temp
+/GOAP-AI/UserSettings/Layouts
+/GOAP-AI/UserSettings/EditorUserSettings.asset
+/GOAP-AI/UserSettings/Search.settings
