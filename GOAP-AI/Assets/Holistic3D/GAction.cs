@@ -45,6 +45,7 @@ public abstract class GAction : MonoBehaviour
         {
             foreach(WorldState w in afterEffects)
             {
+                
                 effects.Add(w.key, w.value);
             }
         }

@@ -1,0 +1,70 @@
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+public abstract class GOAPAction : MonoBehaviour
+{
+    public string actionName; 
+
+    public Dictionary<string, int> conditions;
+    public Dictionary<string, int> effects;
+
+    public WorldState[] preConditions;
+    public WorldState[] afterEffects;
+
+    public GOAPAction()
+    {
+        conditions = new Dictionary<string, int>();
+        effects = new Dictionary<string, int>();
+    }
+
+    public void Awake()
+    {
+
+        if (preConditions != null)
+        {
+            foreach (WorldState w in preConditions)
+            {
+                conditions.Add(w.key, w.value);
+            }
+        }
+        if (afterEffects != null)
+        {
+            foreach (WorldState w in afterEffects)
+            {
+                print(w.key);
+                effects.Add(w.key, w.value);
+            }
+        }
+    }
+
+
+    public bool IsAchievable(Dictionary<string, int> currentAction, Dictionary<string, int> goals)
+    {
+        foreach (KeyValuePair<string, int> kvp in currentAction)
+        {
+            if (goals.ContainsKey(kvp.Key))
+            {
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
+    public bool HasGoal(string goal, Dictionary<string, int> action)
+    {
+        print(action.Keys.Count); 
+        if (action.ContainsKey(goal))
+        {
+            print("has key");
+            return true;
+        }
+        else { print("no key"); return false; }
+
+    }
+
+    public abstract void ExecuteAction();
+    
+}
