@@ -32,7 +32,6 @@ public abstract class GOAPAction : MonoBehaviour
         {
             foreach (GOAPWorldState w in afterEffects)
             {
-                print(w.key);
                 effects.Add(w.key, w.value);
             }
         }
@@ -55,13 +54,12 @@ public abstract class GOAPAction : MonoBehaviour
 
     public bool HasGoal(string goal, Dictionary<string, int> action)
     {
-        print(action.Keys.Count); 
         if (action.ContainsKey(goal))
         {
-            print("has key");
+            //print("has key");
             return true;
         }
-        else { print("no key"); return false; }
+        else { return false; }
 
     }
 

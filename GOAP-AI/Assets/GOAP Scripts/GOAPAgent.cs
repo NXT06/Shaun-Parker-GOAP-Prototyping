@@ -26,10 +26,11 @@ public class GOAPAgent : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space) && !running)
         {
             running = true;
-            ExecuteActions();
+            GetPlan();
+            ExecutePlan(actionQueue); 
         }
     }
-    void ExecuteActions()
+    void GetPlan()
     {
         if(actionQueue == null && action.Count > 0)
         {
@@ -37,14 +38,17 @@ public class GOAPAgent : MonoBehaviour
 
             print("Requesting Plan"); 
             actionQueue = planner.Plan(action, goal, null);
-
-            print($"Final queue " + actionQueue.Count); 
         }
-        currentAction = actionQueue.Dequeue(); 
-        currentAction.ExecuteAction();
-        
-        
+    }
 
+    void ExecutePlan(Queue<GOAPAction> actionQueue)
+    {
+        while(actionQueue.Count > 0) 
+        {
+            currentAction = actionQueue.Dequeue();
+            currentAction.ExecuteAction();
+            print($"Executed: " + currentAction.actionName);
+        }
     }
 
 

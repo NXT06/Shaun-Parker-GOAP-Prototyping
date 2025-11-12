@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Loading;
+using Unity.VisualScripting;
 using UnityEditor.Search;
 using UnityEngine;
 
@@ -14,22 +15,24 @@ public class GOAPPlanner : MonoBehaviour
 
         List<GOAPAction> usableActions = new List<GOAPAction>();
         
+        
         List<GOAPAction> startingActions = new List<GOAPAction>();
 
         foreach (GOAPAction useAction in actions)
         {
-            //Searching through actions to find if any complete the goal state
+            //Sorting actions into starting nodes and regular actions
             if (useAction.HasGoal(goal, useAction.effects))
             {
                 startingActions.Add(useAction);
-                usableActions.Remove(useAction);
-                
             }
-            else { print("NO ACTION WITH GOAL"); queue = null; break; }
+            else
+            {
+                usableActions.Add(useAction);
+            }
         }
-        print($"Number of starting actions: " + startingActions.Count);
+        print($"Starting actions: " + startingActions.Count + ". Usable actions: " + usableActions.Count);
 
-        //Looping through every starting action
+        //Looping through every starting action and returning the first path
         foreach (GOAPAction startAction in startingActions)
         {
             queue = PlanActions(usableActions, startAction);
@@ -50,56 +53,46 @@ public class GOAPPlanner : MonoBehaviour
     Queue<GOAPAction> tempQueue = new Queue<GOAPAction> (); 
     Queue<GOAPAction> PlanActions(List<GOAPAction> usableActions, GOAPAction start)
     {
-        tempQueue.Enqueue(start);
-        print(tempQueue.Count);
-
-        return tempQueue;
-
         List<GOAPAction> remainingActions = usableActions; 
-
-        GOAPAction lastAction = start;
 
         if (remainingActions.Count > 0)
         {
+            //tempQueue.Enqueue(start);
+
             foreach (GOAPAction action in remainingActions)
             {
-                if (action.IsAchievable(action.effects, lastAction.conditions))
-                {
-                    continue;
-                }
-
-                Permute(remainingActions, lastAction);
+               Permute(remainingActions, start, start);
             }
-
-            if (tempQueue != null) { return tempQueue; }
+            if (tempQueue.Count > 0) { return tempQueue; }
         }
 
         return tempQueue;
 
     }
 
-    void Permute(List<GOAPAction> usableActions, GOAPAction previous)
+    void Permute(List<GOAPAction> usableActions, GOAPAction start, GOAPAction previous)
     {
-
-        GOAPAction nextAction = null; 
+        if (!tempQueue.Contains(start))
+        {
+            tempQueue.Enqueue(start);
+        }
 
         foreach (GOAPAction action in usableActions)
         {
-            //Skipping if the action alread
-            if (tempQueue.Contains(previous)) { continue; }
 
             if (action.IsAchievable(action.effects, previous.conditions))
             {
-                nextAction = action;
-                tempQueue.Enqueue(nextAction);
+                tempQueue.Enqueue(action);
 
                 if(action.conditions != null)
                 {
-                    Permute(usableActions, action);
+                    Permute(usableActions, start, action);
                 }
             }
             else { continue; }
         }
+
+        
 
     }
 
