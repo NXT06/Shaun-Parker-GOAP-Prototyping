@@ -8,8 +8,6 @@ using UnityEngine;
 
 public class GOAPPlanner : MonoBehaviour
 {
-    public string goal; 
-
     public Queue<GOAPAction> Plan(List<GOAPAction> actions, string goal, WorldState states)
     {
         Queue<GOAPAction> queue = new Queue<GOAPAction>();

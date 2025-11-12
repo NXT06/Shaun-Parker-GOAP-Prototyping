@@ -10,6 +10,7 @@ public class GOAPAgent : MonoBehaviour
     GOAPPlanner planner; 
 
     public List<GOAPAction> action = new List<GOAPAction>();
+    
     Queue<GOAPAction> actionQueue = null;
 
     public GOAPAction currentAction;
@@ -19,10 +20,6 @@ public class GOAPAgent : MonoBehaviour
     private void Awake()
     {
         action = GetComponents<GOAPAction>().ToList(); 
-    }
-    private void Start()
-    {
-
     }
     private void LateUpdate()
     {
@@ -34,7 +31,6 @@ public class GOAPAgent : MonoBehaviour
     }
     void ExecuteActions()
     {
-
         if(actionQueue == null && action.Count > 0)
         {
             planner = new GOAPPlanner();
@@ -43,13 +39,8 @@ public class GOAPAgent : MonoBehaviour
             actionQueue = planner.Plan(action, goal, null);
 
             print($"Final queue " + actionQueue.Count); 
-            
-
         }
-
-        
-        currentAction = actionQueue.Dequeue();
-        
+        currentAction = actionQueue.Dequeue(); 
         currentAction.ExecuteAction();
         
         

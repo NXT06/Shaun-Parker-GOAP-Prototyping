@@ -103,3 +103,6 @@ InitTestScene*.unity*
 /GOAP-AI/UserSettings/Layouts
 /GOAP-AI/UserSettings/EditorUserSettings.asset
 /GOAP-AI/UserSettings/Search.settings
+/GOAP-AI/Packages/packages-lock.json
+/GOAP-AI/Packages/packages-lock.json
+/GOAP-AI/ProjectSettings/ShaderGraphSettings.asset

@@ -9,8 +9,8 @@ public abstract class GOAPAction : MonoBehaviour
     public Dictionary<string, int> conditions;
     public Dictionary<string, int> effects;
 
-    public WorldState[] preConditions;
-    public WorldState[] afterEffects;
+    public GOAPWorldState[] preConditions;
+    public GOAPWorldState[] afterEffects;
 
     public GOAPAction()
     {
@@ -23,14 +23,14 @@ public abstract class GOAPAction : MonoBehaviour
 
         if (preConditions != null)
         {
-            foreach (WorldState w in preConditions)
+            foreach (GOAPWorldState w in preConditions)
             {
                 conditions.Add(w.key, w.value);
             }
         }
         if (afterEffects != null)
         {
-            foreach (WorldState w in afterEffects)
+            foreach (GOAPWorldState w in afterEffects)
             {
                 print(w.key);
                 effects.Add(w.key, w.value);
