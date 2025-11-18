@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -11,6 +12,10 @@ public abstract class GOAPAction : MonoBehaviour
 
     public GOAPWorldState[] preConditions;
     public GOAPWorldState[] afterEffects;
+
+    public GOAPWorldStates agentBeliefs; 
+
+    bool isCompleted; 
 
     public GOAPAction()
     {
@@ -52,17 +57,24 @@ public abstract class GOAPAction : MonoBehaviour
         return false;
     }
 
-    public bool HasGoal(string goal, Dictionary<string, int> action)
+    public bool HasGoal(GOAPWorldStates agentGoals, Dictionary<string, int> action)
     {
-        if (action.ContainsKey(goal))
+
+        foreach (KeyValuePair<string, int> kvp in action)
         {
-            //print("has key");
-            return true;
+            if (agentGoals.states.ContainsKey(kvp.Key))
+            {
+                return true;
+            }
         }
-        else { return false; }
+
+  
+        { return false; }
 
     }
 
+    public abstract void PrePerform();
     public abstract void ExecuteAction();
+    public abstract void PostPerform();
     
 }

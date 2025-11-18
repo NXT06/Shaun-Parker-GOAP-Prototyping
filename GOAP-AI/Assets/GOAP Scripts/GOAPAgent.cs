@@ -2,6 +2,8 @@ using NUnit.Framework;
 using UnityEngine;
 using System.Linq;
 using System.Collections.Generic;
+using UnityEngine.AI;
+using TMPro;
 
 public class GOAPAgent : MonoBehaviour
 {
@@ -15,19 +17,48 @@ public class GOAPAgent : MonoBehaviour
 
     public GOAPAction currentAction;
 
-    bool running = false;   
+    bool running = false;
+
+    public NavMeshAgent navMesh;
+
+    public GOAPWorldState[] agentGoals; 
+    
+    GOAPWorldStates goalStates = new GOAPWorldStates();
+
+    [SerializeField] TextMeshProUGUI plantext; 
+    [SerializeField] TextMeshProUGUI worldStateText; 
+    [SerializeField] TextMeshProUGUI actionEffectText; 
 
     private void Awake()
     {
-        action = GetComponents<GOAPAction>().ToList(); 
+        foreach (GOAPWorldState w in agentGoals)
+        {
+            goalStates.states.Add(w.key, w.value);
+        }
+        action = GetComponents<GOAPAction>().ToList();
+
+        plantext.text = "Action Queue: ";
+        worldStateText.text = "World States: ";
+        actionEffectText.text = "After Effect: ";
+
+
     }
     private void LateUpdate()
     {
         if(Input.GetKeyDown(KeyCode.Space) && !running)
         {
+            plantext.text = "Action Queue: ";
+            worldStateText.text = "World States: ";
+            actionEffectText.text = "After Effect: "; 
+            actionQueue = null;
             running = true;
             GetPlan();
-            ExecutePlan(actionQueue); 
+            ExecutePlan(actionQueue);
+
+            foreach (var state in GOAPWorld.GetWorld().states)
+            {
+                worldStateText.text += "" + state.Key.ToString() + ", ";
+            }
         }
     }
     void GetPlan()
@@ -36,8 +67,8 @@ public class GOAPAgent : MonoBehaviour
         {
             planner = new GOAPPlanner();
 
-            print("Requesting Plan"); 
-            actionQueue = planner.Plan(action, goal, null);
+            print("Requesting Plan");
+            actionQueue = planner.Plan(action, goalStates);
         }
     }
 
@@ -46,9 +77,11 @@ public class GOAPAgent : MonoBehaviour
         while(actionQueue.Count > 0) 
         {
             currentAction = actionQueue.Dequeue();
+            plantext.text += "" + currentAction.actionName + ", ";
             currentAction.ExecuteAction();
             print($"Executed: " + currentAction.actionName);
         }
+        running = false; 
     }
 
 

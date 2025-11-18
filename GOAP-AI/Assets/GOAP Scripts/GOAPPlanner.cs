@@ -9,19 +9,18 @@ using UnityEngine;
 
 public class GOAPPlanner : MonoBehaviour
 {
-    public Queue<GOAPAction> Plan(List<GOAPAction> actions, string goal, WorldState states)
+    public Queue<GOAPAction> Plan(List<GOAPAction> actions, GOAPWorldStates goals)
     {
         Queue<GOAPAction> queue = new Queue<GOAPAction>();
 
         List<GOAPAction> usableActions = new List<GOAPAction>();
-        
         
         List<GOAPAction> startingActions = new List<GOAPAction>();
 
         foreach (GOAPAction useAction in actions)
         {
             //Sorting actions into starting nodes and regular actions
-            if (useAction.HasGoal(goal, useAction.effects))
+            if (useAction.HasGoal(goals, useAction.effects))
             {
                 startingActions.Add(useAction);
             }
@@ -35,7 +34,7 @@ public class GOAPPlanner : MonoBehaviour
         //Looping through every starting action and returning the first path
         foreach (GOAPAction startAction in startingActions)
         {
-            queue = PlanActions(usableActions, startAction);
+            queue = OrderActions(usableActions, startAction);
 
             if(queue.Count > 0) { print("successful plan"); break; }
 
@@ -50,8 +49,8 @@ public class GOAPPlanner : MonoBehaviour
         return queue; 
     }
 
-    Queue<GOAPAction> tempQueue = new Queue<GOAPAction> (); 
-    Queue<GOAPAction> PlanActions(List<GOAPAction> usableActions, GOAPAction start)
+    Queue<GOAPAction> tempQueue = new Queue<GOAPAction> ();
+    Queue<GOAPAction> OrderActions(List<GOAPAction> usableActions, GOAPAction start)
     {
         List<GOAPAction> remainingActions = usableActions; 
 
@@ -76,18 +75,29 @@ public class GOAPPlanner : MonoBehaviour
         {
             tempQueue.Enqueue(start);
         }
-
         foreach (GOAPAction action in usableActions)
         {
 
+            //First checking to ensure that the action is viable
             if (action.IsAchievable(action.effects, previous.conditions))
             {
                 tempQueue.Enqueue(action);
 
+                //Scanning through every current world state to see if this goal 
+                foreach (KeyValuePair<string, int> kvp in GOAPWorld.GetWorld().states)
+                {
+                    if (action.conditions.ContainsKey(kvp.Key))
+                    {
+                        return;
+                    }
+                }
+                //Ensuring the action still has a condition (otherwise the plan is complete)
                 if(action.conditions != null)
                 {
                     Permute(usableActions, start, action);
+                    break; 
                 }
+                else { return; }
             }
             else { continue; }
         }
