@@ -1,10 +1,5 @@
-
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Loading;
-using Unity.VisualScripting;
-using UnityEditor.Search;
 using UnityEngine;
 
 public class GOAPPlanner : MonoBehaviour
@@ -14,10 +9,9 @@ public class GOAPPlanner : MonoBehaviour
         Queue<GOAPAction> queue = new Queue<GOAPAction>();
 
         List<GOAPAction> usableActions = new List<GOAPAction>();
-        
+
         List<GOAPAction> startingActions = new List<GOAPAction>();
 
-        tempQueue.Clear();
 
         foreach (GOAPAction useAction in actions)
         {
@@ -29,51 +23,41 @@ public class GOAPPlanner : MonoBehaviour
             else
             {
                 usableActions.Add(useAction);
+
             }
         }
+
+        Stack<GOAPAction> startActionsOrdered = CheckForPriority(startingActions);
 
         print($"Starting actions: " + startingActions.Count + ". Usable actions: " + usableActions.Count);
 
-        int maxKeyValue = 0;
+        int startCount = startActionsOrdered.Count;
 
-        foreach (GOAPAction start in startingActions)
+        //Looping through every starting action based of priority and returning the first path
+        for (int i = 0; i < startCount; i++)
         {
-            if(start.conditions.Values.Max() > maxKeyValue)
-            {
-                maxKeyValue = start.conditions.Values.Max();
-            }
-            else 
-        }
+            queue = OrderActions(usableActions, startActionsOrdered.Pop());
 
-        for (int i = 0; i < startingActions.Count; i++)
-        {
-            if()
-        }
-
-        //Looping through every starting action and returning the first path
-        foreach (GOAPAction startAction in startingActions)
-        {
-            queue = OrderActions(usableActions, startAction);
-
-            if(queue.Count > 0) { print("successful plan"); break; }
+            if (queue.Count > 0) { print("successful plan"); break; } //breaking on first successful path
 
             else { continue; }
         }
-        if(queue.Count > 0)
+        if (queue.Count > 0)
         {
             queue = new Queue<GOAPAction>(queue.Reverse());
 
             print($"Returning queue with " + queue.Count + " actions");
         }
 
-        
-        return queue; 
+
+        return queue;
     }
 
-    Queue<GOAPAction> tempQueue = new Queue<GOAPAction> ();
+    Queue<GOAPAction> tempQueue = new Queue<GOAPAction>();
+    Stack<Queue<GOAPAction>> potientialPaths;
     Queue<GOAPAction> OrderActions(List<GOAPAction> usableActions, GOAPAction start)
     {
-        List<GOAPAction> remainingActions = usableActions; 
+        List<GOAPAction> remainingActions = usableActions;
 
         if (remainingActions.Count > 0)
         {
@@ -81,7 +65,7 @@ public class GOAPPlanner : MonoBehaviour
 
             foreach (GOAPAction action in remainingActions)
             {
-               Permute(remainingActions, start, start);
+                Permute(remainingActions, start, start);
             }
             if (tempQueue.Count > 0) { return tempQueue; }
         }
@@ -114,17 +98,50 @@ public class GOAPPlanner : MonoBehaviour
                     }
                 }
                 //Ensuring the action still has a condition (otherwise the plan is complete)
-                if(action.conditions != null)
+                if (action.conditions != null)
                 {
                     Permute(usableActions, start, action);
-                    break; 
+                    break;
+
+
                 }
                 else { return; }
             }
             else { continue; }
         }
 
+
+
+    }
+
+    Stack<GOAPAction> CheckForPriority(List<GOAPAction> actions)
+    {
         
+        Stack<GOAPAction> actionPrios = new Stack<GOAPAction>();
+
+        Dictionary<GOAPAction, int> actionDict = new Dictionary<GOAPAction, int>();
+
+
+        foreach (GOAPAction action in actions)
+        {
+            actionDict.Add(action, action.PriorityCondition());
+        }
+
+        int count = actionDict.Count;
+
+        for (int i = 0; i < count; i++)
+        {
+            actionPrios.Push(actionDict.OrderBy(i => i.Value).First().Key);
+            actionDict.Remove(actionDict.OrderBy(i => i.Value).First().Key); 
+        }
+
+        if (actionPrios != null)
+        {
+            return actionPrios;
+        }
+
+        return null;
+
 
     }
 

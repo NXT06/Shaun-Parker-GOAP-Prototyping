@@ -1062,12 +1062,12 @@ MonoBehaviour:
     value: 0
   navMesh: {fileID: 0}
   isCompleted: 0
-  timeOut: 0
+  timeOut: 10
   Achievable: 1
   textBox: {fileID: 480343190}
   timer: 0
   maxTime: 0
-  stoppingDistance: 5
+  stoppingDistance: 4
 --- !u!114 &1195516296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1106,7 +1106,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  m_StoppingDistance: 3
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -1135,7 +1135,7 @@ MonoBehaviour:
     value: 0
   navMesh: {fileID: 0}
   isCompleted: 0
-  timeOut: 0
+  timeOut: 5
   Achievable: 1
 --- !u!114 &1195516300
 MonoBehaviour:
@@ -1158,7 +1158,7 @@ MonoBehaviour:
     value: 0
   navMesh: {fileID: 0}
   isCompleted: 0
-  timeOut: 0
+  timeOut: 10
   Achievable: 1
   textBox: {fileID: 0}
   timer: 0

@@ -78,6 +78,7 @@ public class GOAPAgent : MonoBehaviour
 
     void RePlan()
     {
+        print("replan"); 
         actionQueue.Clear();
         currentAction = null; 
 
@@ -104,25 +105,25 @@ public class GOAPAgent : MonoBehaviour
             
         }
 
-        if (currentAction != null)
-        {
-            if (currentAction.timeOut > 0)
+        
+            if (currentAction != null && currentAction.timeOut > 0)
             {
                 actionTimer += Time.deltaTime;
 
                 if (actionTimer >= currentAction.timeOut)
                 {
                     RePlan();
+                    actionTimer = 0;
                 }
             }
 
-            if (currentAction.isCompleted)
+            if (currentAction != null && currentAction.isCompleted)
             {
                 print("post performed");
                 currentAction.PostPerform();
                 currentAction = null;
             }
-            else
+            else if (currentAction != null) 
             {
                 if (currentAction.Achievable)
                 {
@@ -137,7 +138,7 @@ public class GOAPAgent : MonoBehaviour
                 }
             }
 
-        }
+        
 
     }
 

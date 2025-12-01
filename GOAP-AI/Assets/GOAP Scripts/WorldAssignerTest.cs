@@ -13,8 +13,13 @@ public class WorldAssignerTest : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI worldstateText; 
 
-    GOAPWorldStates currentWorld; 
+    GOAPWorldStates currentWorld;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    private void Awake()
+    {
+        player = thisPlayer; 
+    }
     void Start()
     {
         GOAPWorld.GetWorld().states.Add("playerAlive", 0); 

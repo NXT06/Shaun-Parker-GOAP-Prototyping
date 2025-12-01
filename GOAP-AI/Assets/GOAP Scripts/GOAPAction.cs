@@ -1,7 +1,9 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+
+
 
 public abstract class GOAPAction : MonoBehaviour
 {
@@ -27,6 +29,8 @@ public abstract class GOAPAction : MonoBehaviour
     {
         conditions = new Dictionary<string, int>();
         effects = new Dictionary<string, int>();
+
+        
     }
 
     public void Awake()
@@ -77,6 +81,31 @@ public abstract class GOAPAction : MonoBehaviour
   
         { return false; }
 
+    }
+
+    public int PriorityCondition()
+    {
+        int maxValue = conditions.Values.Max();
+        List<int> highestKVPs = new List<int>();
+
+        foreach (KeyValuePair<string, int> kvp in conditions)
+        {
+            if (kvp.Value == maxValue)
+            {
+                highestKVPs.Add(kvp.Value); 
+            }
+        }
+
+        if (highestKVPs.Count == 1)
+        {
+            return highestKVPs[0];
+        }
+        else
+        {
+            int choice = Random.Range(0, highestKVPs.Count);
+
+            return highestKVPs[choice];
+        }
     }
     
     //Execuction functions for the action
