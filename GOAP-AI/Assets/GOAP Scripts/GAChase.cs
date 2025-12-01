@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class GATest : GOAPAction
+public class GAChase : GOAPAction
 {
     [SerializeField] TextMeshProUGUI textBox;
     public float timer;
@@ -40,6 +40,7 @@ public class GATest : GOAPAction
     {
         navMesh = null;
         textBox.text += " buildings destroyed";
-        GOAPWorld.GetWorld().AddState("playerInRange", 0);
+        GOAPWorld.GetWorld().RemoveState("buildingsAlive");
+        GOAPWorld.GetWorld().AddState("buildingsDestroyed", 0);
     }
 }

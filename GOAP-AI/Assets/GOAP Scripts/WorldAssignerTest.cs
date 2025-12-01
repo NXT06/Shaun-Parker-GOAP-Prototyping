@@ -7,6 +7,10 @@ public class WorldAssignerTest : MonoBehaviour
 {
     public string[] worldStates;
 
+    public static GameObject player;
+    
+    public GameObject thisPlayer; 
+
     [SerializeField] TextMeshProUGUI worldstateText; 
 
     GOAPWorldStates currentWorld; 
@@ -27,6 +31,7 @@ public class WorldAssignerTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        player = thisPlayer; 
         worldStates = GOAPWorld.GetWorld().states.Keys.ToArray<string>();
     }
 }

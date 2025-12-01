@@ -47,19 +47,23 @@ public class GOAPAgent : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Space) && !running)
         {
-            plantext.text = "Action Queue: ";
-            worldStateText.text = "World States: ";
-            actionEffectText.text = "After Effect: "; 
             actionQueue = null;
             running = true;
             GetPlan();
-            ExecutePlan(actionQueue);
+            
 
             foreach (var state in GOAPWorld.GetWorld().states)
             {
                 worldStateText.text += "" + state.Key.ToString() + ", ";
             }
         }
+
+        if (running == true)
+        {
+            ExecutePlan(actionQueue); 
+        }
+
+
     }
     void GetPlan()
     {
@@ -72,16 +76,54 @@ public class GOAPAgent : MonoBehaviour
         }
     }
 
+    void RePlan()
+    {
+        actionQueue.Clear();
+        currentAction = null; 
+
+        actionQueue = planner.Plan(action, goalStates);
+
+
+    }
+
     void ExecutePlan(Queue<GOAPAction> actionQueue)
     {
-        while(actionQueue.Count > 0) 
+        if (currentAction == null)
         {
-            currentAction = actionQueue.Dequeue();
-            plantext.text += "" + currentAction.actionName + ", ";
-            currentAction.ExecuteAction();
-            print($"Executed: " + currentAction.actionName);
+            if (actionQueue.Count > 0 && actionQueue != null)
+            {
+                running = true; 
+                currentAction = actionQueue.Dequeue();
+                plantext.text += "" + currentAction.actionName + ", ";
+                currentAction.navMesh = navMesh; 
+                currentAction.PrePerform(); 
+                print($"Executed: " + currentAction.actionName);
+            }
+            else { running = false; }
+            
         }
-        running = false; 
+        if (currentAction.isCompleted)
+        {
+            print("post performed");
+            currentAction.PostPerform();
+            currentAction = null; 
+        }
+
+        else if (!currentAction.isCompleted)
+        {
+            if (currentAction.Achievable)
+            {
+
+                currentAction.ExecuteAction();
+
+            }
+            else
+            {
+                currentAction = null;
+                RePlan();
+            }
+        }
+
     }
 
 

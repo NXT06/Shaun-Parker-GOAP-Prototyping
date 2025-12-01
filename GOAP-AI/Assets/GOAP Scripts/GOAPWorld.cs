@@ -5,9 +5,7 @@ public sealed class GOAPWorld
 {
     private static readonly GOAPWorld instance = new GOAPWorld();
     private static GOAPWorldStates world;
-
     
-
     static GOAPWorld()
     {
         world = new GOAPWorldStates();

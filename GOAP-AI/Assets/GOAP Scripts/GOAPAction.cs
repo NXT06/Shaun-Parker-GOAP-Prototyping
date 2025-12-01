@@ -13,9 +13,15 @@ public abstract class GOAPAction : MonoBehaviour
     public GOAPWorldState[] preConditions;
     public GOAPWorldState[] afterEffects;
 
-    public GOAPWorldStates agentBeliefs; 
+    public GOAPWorldStates agentBeliefs;
 
-    bool isCompleted; 
+    public NavMeshAgent navMesh;
+
+    public float num = 6; 
+
+    public bool isCompleted;
+
+    public bool Achievable = true; 
 
     public GOAPAction()
     {
@@ -72,7 +78,8 @@ public abstract class GOAPAction : MonoBehaviour
         { return false; }
 
     }
-
+    
+    //Execuction functions for the action
     public abstract void PrePerform();
     public abstract void ExecuteAction();
     public abstract void PostPerform();
