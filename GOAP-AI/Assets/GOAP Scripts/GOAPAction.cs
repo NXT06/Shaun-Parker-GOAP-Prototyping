@@ -17,9 +17,9 @@ public abstract class GOAPAction : MonoBehaviour
 
     public NavMeshAgent navMesh;
 
-    public float num = 6; 
-
     public bool isCompleted;
+
+    public float timeOut; 
 
     public bool Achievable = true; 
 

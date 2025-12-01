@@ -17,6 +17,8 @@ public class GOAPPlanner : MonoBehaviour
         
         List<GOAPAction> startingActions = new List<GOAPAction>();
 
+        tempQueue.Clear();
+
         foreach (GOAPAction useAction in actions)
         {
             //Sorting actions into starting nodes and regular actions
@@ -29,7 +31,24 @@ public class GOAPPlanner : MonoBehaviour
                 usableActions.Add(useAction);
             }
         }
+
         print($"Starting actions: " + startingActions.Count + ". Usable actions: " + usableActions.Count);
+
+        int maxKeyValue = 0;
+
+        foreach (GOAPAction start in startingActions)
+        {
+            if(start.conditions.Values.Max() > maxKeyValue)
+            {
+                maxKeyValue = start.conditions.Values.Max();
+            }
+            else 
+        }
+
+        for (int i = 0; i < startingActions.Count; i++)
+        {
+            if()
+        }
 
         //Looping through every starting action and returning the first path
         foreach (GOAPAction startAction in startingActions)
@@ -42,6 +61,8 @@ public class GOAPPlanner : MonoBehaviour
         }
         if(queue.Count > 0)
         {
+            queue = new Queue<GOAPAction>(queue.Reverse());
+
             print($"Returning queue with " + queue.Count + " actions");
         }
 
@@ -82,6 +103,7 @@ public class GOAPPlanner : MonoBehaviour
             if (action.IsAchievable(action.effects, previous.conditions))
             {
                 tempQueue.Enqueue(action);
+
 
                 //Scanning through every current world state to see if this goal 
                 foreach (KeyValuePair<string, int> kvp in GOAPWorld.GetWorld().states)

@@ -355,10 +355,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 192411382}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 450, y: -120.850006}
-  m_SizeDelta: {x: 900, y: 50.15}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &427036409
 MonoBehaviour:
@@ -491,10 +491,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 192411382}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 450, y: -75}
-  m_SizeDelta: {x: 900, y: 50.15}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &432153480
 MonoBehaviour:
@@ -706,10 +706,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 192411382}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 450, y: -29.149998}
-  m_SizeDelta: {x: 900, y: 50.15}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &480343190
 MonoBehaviour:
@@ -940,7 +940,8 @@ GameObject:
   - component: {fileID: 1195516298}
   - component: {fileID: 1195516296}
   - component: {fileID: 1195516295}
-  - component: {fileID: 1195516297}
+  - component: {fileID: 1195516299}
+  - component: {fileID: 1195516300}
   m_Layer: 0
   m_Name: AI
   m_TagString: Untagged
@@ -1052,16 +1053,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fcce74da7df73974085fcb78dd5889fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionName: TestAction
+  actionName: Chase
   preConditions:
-  - key: Test
+  - key: 
     value: 0
   afterEffects:
-  - key: buildingsDestroyed
+  - key: playerInRange
     value: 0
   navMesh: {fileID: 0}
-  num: 6
   isCompleted: 0
+  timeOut: 0
   Achievable: 1
   textBox: {fileID: 480343190}
   timer: 0
@@ -1091,29 +1092,6 @@ MonoBehaviour:
   plantext: {fileID: 432153480}
   worldStateText: {fileID: 427036409}
   actionEffectText: {fileID: 480343190}
---- !u!114 &1195516297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1195516290}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b7ba528b31fccb4bb40db3e90d25f06, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  actionName: TestAction2
-  preConditions:
-  - key: buildingsAlive
-    value: 0
-  afterEffects:
-  - key: Test
-    value: 0
-  navMesh: {fileID: 0}
-  num: 6
-  isCompleted: 0
-  Achievable: 1
 --- !u!195 &1195516298
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1136,6 +1114,56 @@ NavMeshAgent:
   m_BaseOffset: 1
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &1195516299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195516290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41e62a42cc9c3074392d491ed6123bba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionName: Attack
+  preConditions:
+  - key: playerInRange
+    value: 0
+  afterEffects:
+  - key: playerDead
+    value: 0
+  navMesh: {fileID: 0}
+  isCompleted: 0
+  timeOut: 0
+  Achievable: 1
+--- !u!114 &1195516300
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1195516290}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf7714e1fcd1b47429f499f5940b812c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionName: Test
+  preConditions:
+  - key: playerInRange
+    value: 2
+  afterEffects:
+  - key: playerDead
+    value: 0
+  navMesh: {fileID: 0}
+  isCompleted: 0
+  timeOut: 0
+  Achievable: 1
+  textBox: {fileID: 0}
+  timer: 0
+  maxTime: 0
+  stoppingDistance: 0
 --- !u!1 &1250653176
 GameObject:
   m_ObjectHideFlags: 0
@@ -1285,7 +1313,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1260062681
 MonoBehaviour:
   m_ObjectHideFlags: 0

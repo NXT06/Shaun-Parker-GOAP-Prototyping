@@ -27,7 +27,6 @@ public class GAChase : GOAPAction
         {
             return; 
         }
-        print(navMesh.remainingDistance);
         if (navMesh.remainingDistance < stoppingDistance)
         {
             print("reached target");

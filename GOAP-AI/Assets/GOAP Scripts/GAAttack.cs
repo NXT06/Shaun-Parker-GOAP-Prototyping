@@ -1,7 +1,23 @@
 using UnityEngine;
 
-public class GAAttack : MonoBehaviour
+public class GAAttack : GOAPAction
 {
+    public override void ExecuteAction()
+    {
+        print("attack");
+        isCompleted = true; 
+    }
+
+    public override void PostPerform()
+    {
+
+    }
+
+    public override void PrePerform()
+    {
+
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
