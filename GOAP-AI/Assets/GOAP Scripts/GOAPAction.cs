@@ -52,11 +52,11 @@ public abstract class GOAPAction : MonoBehaviour
         }
     }
 
-
     public bool IsAchievable(Dictionary<string, int> currentAction, Dictionary<string, int> goals)
     {
         foreach (KeyValuePair<string, int> kvp in currentAction)
         {
+            print(kvp.Key +  ": " + goals.Keys.First());
             if (goals.ContainsKey(kvp.Key))
             {
                 return true;
@@ -77,16 +77,22 @@ public abstract class GOAPAction : MonoBehaviour
                 return true;
             }
         }
-
-  
         { return false; }
 
     }
 
     public int PriorityCondition()
     {
-        int maxValue = conditions.Values.Max();
-        List<int> highestKVPs = new List<int>();
+        int maxValue;
+        if(conditions.Values.Count > 0)
+        {
+             maxValue = conditions.Values.Max();
+        }
+        else
+        {
+            return 0; 
+        }
+            List<int> highestKVPs = new List<int>();
 
         foreach (KeyValuePair<string, int> kvp in conditions)
         {

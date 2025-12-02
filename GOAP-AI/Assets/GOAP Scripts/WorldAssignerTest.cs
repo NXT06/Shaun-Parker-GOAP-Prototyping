@@ -29,7 +29,7 @@ public class WorldAssignerTest : MonoBehaviour
 
         foreach (var state in GOAPWorld.GetWorld().states)
         {
-            worldstateText.text += "" + state.Key + ", ";
+           // worldstateText.text += "" + state.Key + ", ";
         }
     }
 

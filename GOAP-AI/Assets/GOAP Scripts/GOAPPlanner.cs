@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GOAPPlanner : MonoBehaviour
@@ -12,6 +13,7 @@ public class GOAPPlanner : MonoBehaviour
 
         List<GOAPAction> startingActions = new List<GOAPAction>();
 
+        print("starting"); 
 
         foreach (GOAPAction useAction in actions)
         {
@@ -23,13 +25,15 @@ public class GOAPPlanner : MonoBehaviour
             else
             {
                 usableActions.Add(useAction);
-
             }
         }
 
+        //Ordering the Actions by priority, this allows permute test through them correctly
         Stack<GOAPAction> startActionsOrdered = CheckForPriority(startingActions);
+        
 
         print($"Starting actions: " + startingActions.Count + ". Usable actions: " + usableActions.Count);
+        print(usableActions.Last().actionName); 
 
         int startCount = startActionsOrdered.Count;
 
@@ -38,11 +42,11 @@ public class GOAPPlanner : MonoBehaviour
         {
             queue = OrderActions(usableActions, startActionsOrdered.Pop());
 
-            if (queue.Count > 0) { print("successful plan"); break; } //breaking on first successful path
+            if (queue != null && queue.Count > 0) { break; } //breaking on first successful path
 
             else { continue; }
         }
-        if (queue.Count > 0)
+        if (queue != null && queue.Count > 0)
         {
             queue = new Queue<GOAPAction>(queue.Reverse());
 
@@ -57,31 +61,53 @@ public class GOAPPlanner : MonoBehaviour
     Stack<Queue<GOAPAction>> potientialPaths;
     Queue<GOAPAction> OrderActions(List<GOAPAction> usableActions, GOAPAction start)
     {
-        List<GOAPAction> remainingActions = usableActions;
+        Stack<GOAPAction> usableActionsOrdered = CheckForPriority(usableActions);
 
-        if (remainingActions.Count > 0)
+        if (usableActions.Count > 0)
         {
-            //tempQueue.Enqueue(start);
-
-            foreach (GOAPAction action in remainingActions)
+            //Attempting to permute 
+            for (int i = 0; i < usableActions.Count; i++)
             {
-                Permute(remainingActions, start, start);
+                tempQueue.Clear();
+
+                Permute(usableActionsOrdered, start, start);
+
+                if (tempQueue.Count > 0 && tempQueue.Last().conditions.Count == 0)
+                {return  tempQueue;}
+                else
+                {
+                    print("last action had conditions"); 
+                }
             }
-            if (tempQueue.Count > 0) { return tempQueue; }
         }
 
-        return tempQueue;
+        return null;
 
     }
 
-    void Permute(List<GOAPAction> usableActions, GOAPAction start, GOAPAction previous)
+    void Permute(Stack<GOAPAction> usableActions, GOAPAction start, GOAPAction previous)
     {
+        Stack<GOAPAction> newActions = new Stack<GOAPAction>(new Stack<GOAPAction>(usableActions));
+
+        print("premuted using: " + previous.actionName); 
+
         if (!tempQueue.Contains(start))
         {
             tempQueue.Enqueue(start);
         }
-        foreach (GOAPAction action in usableActions)
+
+        if(previous.conditions.Count == 0)
         {
+            return; 
+        }
+
+        int count = usableActions.Count;
+        print(usableActions.Count); 
+        
+        for (int i = 0; i < count; i++)
+        {
+            //Removing the highest priority action and testing it
+            GOAPAction action = newActions.Pop();
 
             //First checking to ensure that the action is viable
             if (action.IsAchievable(action.effects, previous.conditions))
@@ -89,25 +115,26 @@ public class GOAPPlanner : MonoBehaviour
                 tempQueue.Enqueue(action);
 
 
-                //Scanning through every current world state to see if this goal 
+                //Scanning through every current world state to see if this is a condition for the action
                 foreach (KeyValuePair<string, int> kvp in GOAPWorld.GetWorld().states)
                 {
                     if (action.conditions.ContainsKey(kvp.Key))
                     {
-                        return;
+                        print("contains world state");
+                        return; //returns when the action contains a condition that matches world state
                     }
+                    
                 }
+
                 //Ensuring the action still has a condition (otherwise the plan is complete)
                 if (action.conditions != null)
                 {
-                    Permute(usableActions, start, action);
-                    break;
-
-
+                        Permute(usableActions, start, action);
+                        break;
                 }
                 else { return; }
             }
-            else { continue; }
+            else { print(action.actionName + " is not achievable.");  continue; }
         }
 
 

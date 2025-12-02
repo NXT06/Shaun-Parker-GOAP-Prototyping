@@ -26,8 +26,8 @@ public class GOAPAgent : MonoBehaviour
     GOAPWorldStates goalStates = new GOAPWorldStates();
 
     [SerializeField] TextMeshProUGUI plantext; 
-    [SerializeField] TextMeshProUGUI worldStateText; 
-    [SerializeField] TextMeshProUGUI actionEffectText; 
+    [SerializeField] TextMeshProUGUI goaltext; 
+    [SerializeField] TextMeshProUGUI currentActionText; 
 
     private void Awake()
     {
@@ -37,25 +37,18 @@ public class GOAPAgent : MonoBehaviour
         }
         action = GetComponents<GOAPAction>().ToList();
 
-        plantext.text = "Action Queue: ";
-        worldStateText.text = "World States: ";
-        actionEffectText.text = "After Effect: ";
+        plantext.text = "";
 
 
     }
     private void LateUpdate()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && !running)
+        if(actionQueue == null)
         {
             actionQueue = null;
             running = true;
             GetPlan();
             
-
-            foreach (var state in GOAPWorld.GetWorld().states)
-            {
-                worldStateText.text += "" + state.Key.ToString() + ", ";
-            }
         }
 
         if (running == true)
@@ -71,15 +64,35 @@ public class GOAPAgent : MonoBehaviour
         {
             planner = new GOAPPlanner();
 
+
             print("Requesting Plan");
             actionQueue = planner.Plan(action, goalStates);
+
+            if(actionQueue.Count == 0)
+            {
+                actionQueue = null;
+                print("No available plan");
+                return; 
+            }
+
+            Queue<GOAPAction> printPlan = new Queue<GOAPAction>();
+
+            printPlan = actionQueue; 
+
+            foreach (GOAPAction action in printPlan)
+            {
+                plantext.text += "| " + action.actionName + " "; 
+            }
+            plantext.text += "|";
+
+            goaltext.text = actionQueue.Last().afterEffects.ElementAt(0).key; 
         }
     }
 
     void RePlan()
     {
-        print("replan"); 
-        actionQueue.Clear();
+        print("replan");
+        actionQueue = null; 
         currentAction = null; 
 
         actionQueue = planner.Plan(action, goalStates);
@@ -90,53 +103,70 @@ public class GOAPAgent : MonoBehaviour
     float actionTimer; 
     void ExecutePlan(Queue<GOAPAction> actionQueue)
     {
-        if (currentAction == null)
+        if (currentAction == null && actionQueue != null)
         {
             if (actionQueue.Count > 0 && actionQueue != null)
             {
                 running = true; 
                 currentAction = actionQueue.Dequeue();
-                plantext.text += "" + currentAction.actionName + ", ";
+                currentActionText.text = currentAction.actionName;
                 currentAction.navMesh = navMesh; 
                 currentAction.PrePerform(); 
                 print($"Executed: " + currentAction.actionName);
+
+                
             }
-            else { running = false; }
+            else { print("No Viable Plan"); plantext.text = "No Plan";  running = false;}
             
         }
 
         
-            if (currentAction != null && currentAction.timeOut > 0)
-            {
-                actionTimer += Time.deltaTime;
+        if (currentAction != null && currentAction.timeOut > 0)
+        {
+            actionTimer += Time.deltaTime;
+            print("Time remaining for action: " + actionTimer +" / " + currentAction.timeOut); 
 
-                if (actionTimer >= currentAction.timeOut)
-                {
-                    RePlan();
-                    actionTimer = 0;
-                }
+            if (actionTimer > currentAction.timeOut)
+            {
+                print("timer up"); 
+                RePlan();
+                actionTimer = 0;
             }
+        }
 
-            if (currentAction != null && currentAction.isCompleted)
+        if(currentAction != null && !currentAction.Achievable)
+        {
+            RePlan();
+            actionTimer = 0; 
+        }
+
+        if (currentAction != null && currentAction.isCompleted)
+        {
+            currentAction.isCompleted = false;
+            print("post performed");
+            currentAction.PostPerform();
+            currentAction = null;
+
+            if (actionQueue.Count <= 0)
             {
-                print("post performed");
-                currentAction.PostPerform();
+                RePlan(); 
+            }
+        }
+        else if (currentAction != null) 
+        {
+            if (currentAction.Achievable)
+            {
+
+                currentAction.ExecuteAction();
+
+            }
+            else
+            {
                 currentAction = null;
+                actionTimer = 0;
+                RePlan();
             }
-            else if (currentAction != null) 
-            {
-                if (currentAction.Achievable)
-                {
-
-                    currentAction.ExecuteAction();
-
-                }
-                else
-                {
-                    currentAction = null;
-                    RePlan();
-                }
-            }
+        }
 
         
 

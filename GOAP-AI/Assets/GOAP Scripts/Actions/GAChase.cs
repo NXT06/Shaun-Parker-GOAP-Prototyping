@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class GATest : GOAPAction
+public class GAChase : GOAPAction
 {
     [SerializeField] TextMeshProUGUI textBox;
     public float timer;
@@ -23,12 +23,16 @@ public class GATest : GOAPAction
     }
     public override void ExecuteAction()
     {
-        if(navMesh.pathPending)
+        if (WorldAssignerTest.player.transform != null)
+        {
+            target = WorldAssignerTest.player.transform;
+            navMesh.destination = target.position;
+        }
+        if (navMesh.pathPending)
         {
             return; 
         }
-        print(navMesh.remainingDistance);
-        if (navMesh.remainingDistance < stoppingDistance)
+        if (navMesh.remainingDistance <= stoppingDistance)
         {
             print("reached target");
             navMesh.isStopped = true;
@@ -39,7 +43,6 @@ public class GATest : GOAPAction
     public override void PostPerform()
     {
         navMesh = null;
-        textBox.text += " buildings destroyed";
-        GOAPWorld.GetWorld().AddState("playerInRange", 0);
+        
     }
 }
