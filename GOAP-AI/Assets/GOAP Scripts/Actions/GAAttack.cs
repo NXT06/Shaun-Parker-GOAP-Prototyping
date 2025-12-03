@@ -4,7 +4,7 @@ public class GAAttack : GOAPAction
 {
 
     public float attackCD = 1;
-    LayerMask enemyLayer;
+    public LayerMask enemyLayer;
     public float attackRange = 2; 
 
     float timer; 
@@ -21,13 +21,14 @@ public class GAAttack : GOAPAction
 
         if(!DetectEnemy(enemyLayer, attackRange))
         {
+            print("enemy left range"); 
             isCompleted = true; 
         }
     }
 
     public override void PostPerform()
     {
-
+        navMesh.isStopped = false;
     }
 
     public override void PrePerform()
@@ -41,11 +42,24 @@ public class GAAttack : GOAPAction
 
         if (hits.Length > 0)
         {
-            return true;
+            foreach (Collider c in hits)
+            {
+                if (c.gameObject == this.gameObject)
+                {
+                    continue;
+                }
+                return true;
+            }
         }
 
         return false;
 
 
+    }
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+
+        Gizmos.DrawWireSphere(transform.position, attackRange); 
     }
 }

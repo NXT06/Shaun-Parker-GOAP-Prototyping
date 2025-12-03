@@ -74,7 +74,14 @@ public class GAPatrol : GOAPAction
 
         if(hits.Length > 0)
         {
-            return true;
+            foreach (Collider c in hits)
+            {
+                if (c.gameObject == this.gameObject)
+                {
+                    continue;
+                }
+                return true;
+            }
         }
 
         return false;

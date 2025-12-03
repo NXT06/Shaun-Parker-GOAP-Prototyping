@@ -27,7 +27,7 @@ public class GOAPAgent : MonoBehaviour
 
     [SerializeField] TextMeshProUGUI plantext; 
     [SerializeField] TextMeshProUGUI goaltext; 
-    [SerializeField] TextMeshProUGUI currentActionText; 
+    [SerializeField] TextMeshProUGUI currentActionText;
 
     private void Awake()
     {
@@ -124,7 +124,6 @@ public class GOAPAgent : MonoBehaviour
         if (currentAction != null && currentAction.timeOut > 0)
         {
             actionTimer += Time.deltaTime;
-            print("Time remaining for action: " + actionTimer +" / " + currentAction.timeOut); 
 
             if (actionTimer > currentAction.timeOut)
             {
@@ -147,10 +146,12 @@ public class GOAPAgent : MonoBehaviour
             currentAction.PostPerform();
             currentAction = null;
 
-            if (actionQueue.Count <= 0)
+            if(actionQueue.Count == 0)
             {
                 RePlan(); 
             }
+
+           
         }
         else if (currentAction != null) 
         {

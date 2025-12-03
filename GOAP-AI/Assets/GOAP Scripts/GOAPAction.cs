@@ -23,7 +23,7 @@ public abstract class GOAPAction : MonoBehaviour
 
     public float timeOut; 
 
-    public bool Achievable = true; 
+    public bool Achievable = true;
 
     public GOAPAction()
     {
